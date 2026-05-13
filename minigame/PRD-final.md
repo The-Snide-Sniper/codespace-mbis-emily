@@ -3,35 +3,25 @@
 ## 1. Context & Purpose
 
 ### Purpose & Problem Statement
-A lightweight, standalone web prototype to measure and collect player aiming accuracy across configurable difficulty presets. Designers and researchers need a repeatable, fast way to gather quantitative data to guide balance decisions; current ad-hoc testing is slow and inconsistent.
+A lightweight, standalone web prototype to measure and collect player aiming accuracy across configurable difficulty presets. Designer needs a prototype to demonstrate the idea and collect data that could be used to balance and tune it for integration into a larger project.
 
 ### Target Users
-- Game designers and playtesters who need to iterate on aim/balance quickly.
-- Researchers or instructors running controlled playtests.
+- Game designers and playtesters who need to iterate on balance.
 - Casual players participating in anonymous practice sessions.
-
-### Goals & Success Metrics
-
-| Goal | Metric | Target |
-|------|--------|--------|
-| Enable rapid balance iteration | Time to apply and test new preset | < 1 day to update preset file and collect new data |
-| Collect clean aiming telemetry | Attempts with valid telemetry per preset | >= 200 attempts per preset in initial playtests |
-| Demonstrate clear difficulty separation | Measurable shift in hit rate / distance distributions | Statistically significant separation between presets |
-
----
 
 ## 2. Features & Scope
 
 ### User Stories
 
-1. As a playtester, I want to open a page and immediately play an endless practice session, so I can provide many attempts quickly.
-2. As a designer, I want presets loaded from a server with a local fallback, so presets can be tuned without redeploying the page.
+1. As a playtester, I want to open a page and immediately play an endless session, so I can provide many attempts quickly.
 3. As a player, I want the crosshair to spawn offscreen and move, so I can practice timing my clicks.
 4. As a player, I want a first click to rotate the crosshair (configurable fixed 90° option) and a second click to lock the aim, so the test is a two-step skill challenge.
-5. As a designer, I want adjustable parameters (target size, initial speed, after-click speed multiplier sampled lognormally, angle behavior, variability), so difficulty is tunable.
-6. As a designer, I want visual cues (crosshair arm indicating direction + circle stretch/squish indicating speed change) so players perceive upcoming motion.
-7. As an analyst, I want telemetry batched and uploaded, so network impact is minimized and data is collected reliably.
-8. As a privacy-conscious owner, I want ephemeral anonymous session IDs per load, so no personal data is captured.
+5. As the designer, I want adjustable parameters (target size, initial speed, after-click speed multiplier sampled lognormally, angle behavior, optimal time between clicks, variability), so difficulty is tunable.
+6. As the designer, I want presets for the parameters that can be filled in automatically, so that I can have a handful of difficulty settings with lots of data.
+7. As a player, I want visual cues (crosshair arm indicating direction + circle stretch/squish indicating speed change) so I can predict upcoming motion.
+8. As an analyst, I want telemetry batched and uploaded, so network impact is minimized and data is collected reliably.
+9. As a privacy-conscious player, I want ephemeral anonymous session IDs per load, so no personal data is captured.
+10. As a privacy-conscious player, I want the option to disable data collection entirely, so no data at all is captured.
 
 ### Scope Boundaries
 
@@ -65,7 +55,7 @@ A lightweight, standalone web prototype to measure and collect player aiming acc
 - Crosshair two-click flow operates as described; hit detection uses center-within-radius rule.
 - After-click speed multiplier uses lognormal multiplier sampling (configurable mu/sigma).
 - Visual indicators render the upcoming direction and relative speed change.
-- Telemetry records contain hit/miss, preset ID, and session ID; batching/upload behavior functions as configured.
+- Telemetry records contain hit/miss, difficulty settings, and session ID; batching/upload behavior functions as configured.
 - Canvas scales responsively with window size while preserving gameplay behavior.
 
 ---
@@ -96,21 +86,19 @@ None for prototype. No personal data captured; session IDs are anonymous and eph
 
 ### Must-have (MVP)
 - Responsive standalone HTML5 Canvas page with two-click aiming and hit detection.
-- Server-driven presets with local fallback and built-in defaults.
 - Lognormal-sampled after-click speed multiplier and fixed-angle option.
-- Visual crosshair indicators and minimal Hit/Miss feedback.
-- Batched telemetry storage and upload on threshold/session end.
+- Server-driven presets with local fallback and built-in defaults.
+- Visual crosshair indicators and Hit/Miss feedback.
 
 ### Can wait
 - In-page preset editor with push-to-server flow.
 - Cursor-path replay visualization.
-- Embeddable JS module and integration hooks.
-- Analytics dashboards.
+- Batched telemetry storage and upload on threshold/session end.
 
 ### Order of work
 1. Implement core gameplay and hit detection with built-in defaults.
-2. Add preset fetching and config.json fallback.
 3. Implement lognormal multiplier sampling and visual indicators.
+2. Add preset fetching and config.json fallback.
 4. Implement telemetry batching and upload logic.
 5. Polish visuals, run playtests, and iterate.
 
@@ -118,5 +106,5 @@ None for prototype. No personal data captured; session IDs are anonymous and eph
 
 ## Further Notes
 - Design telemetry schema to be lightweight and anonymous.
-- Capture sufficient attempts per preset (>=200) for statistical analysis.
+- Capture sufficient attempts per preset for statistical analysis.
 - Keep server-side presets editable for rapid iteration during playtests.
