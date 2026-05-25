@@ -1,5 +1,6 @@
 const { isHit } = require('./hit');
 const config = require('./config');
+const render = require('./render');
 
 let attempts = [];
 let state = 'idle';
@@ -76,7 +77,9 @@ module.exports = {
     if (_currentPreset) applyPreset(_currentPreset);
     if (opts && opts.size) _target.radius = opts.size;
     state = 'idle';
-    // crosshair starts offscreen; for test, _currentPoint remains 0,0
+    // crosshair starts above the screen by default
+    _currentPoint.x = (opts && typeof opts.startX === 'number') ? opts.startX : (typeof window !== 'undefined' ? window.innerWidth / 2 : 0);
+    _currentPoint.y = (opts && typeof opts.startY === 'number') ? opts.startY : -50;
   },
   // optional: allow tests to set a click point for determinism
   setClickPoint: function(pt) {
@@ -108,3 +111,16 @@ module.exports = {
 };
 
 module.exports.getVelocities = function() { return { initial: Object.assign({}, _velocity), afterClick: Object.assign({}, _velocity_after) }; };
+
+module.exports.tick = function(dtSeconds) {
+  if (state === 'locked') return;
+  // select velocity depending on whether the crosshair has been turned
+  const vel = (state === 'turned') ? _velocity_after : _velocity;
+  _currentPoint.x += vel.vx * dtSeconds;
+  _currentPoint.y += vel.vy * dtSeconds;
+};
+
+module.exports.render = function(ctx) {
+  const state = { target: Object.assign({}, _target), crosshair: Object.assign({}, _currentPoint) };
+  render.draw(state, ctx);
+};
