@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const DEFAULT_PRESETS = [
-  { name: 'default', size: 10, initial_speed: 1, after_click_multiplier: 1.0, angle: 0 }
+  { name: 'default', size: 10, initial_speed: 1, after_click_multiplier: 1.0, angle: 270, max_angle_delta: 0 }
 ];
 
 function readJsonFile(filepath) {

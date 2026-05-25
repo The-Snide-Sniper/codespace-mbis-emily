@@ -11,8 +11,26 @@ let _initial_speed = 1;
 let _after_click_multiplier = 1.0;
 let _angle = 0;
 
+let _max_angle_delta = 0;
+// Derived velocities (vx, vy) for the crosshair
+let _velocity = {vx:0, vy:0};
+let _velocity_after = {vx:0, vy:0};
+
 let _presets = config.getPresets ? config.getPresets() : [];
 let _currentPreset = _presets.length ? _presets[0] : null;
+
+function computeVelocities() {
+  // Compute initial velocity from _initial_speed and _angle
+  const radInit = (_angle || 0) * Math.PI / 180;
+  _velocity.vx = Math.cos(radInit) * _initial_speed;
+  _velocity.vy = Math.sin(radInit) * _initial_speed;
+  // Randomize angle delta for after-click velocity in degrees: uniform [-max, +max]
+  const deltaDeg = (_max_angle_delta || 0) * (Math.random() * 2 - 1);
+  const radAfter = (_angle + deltaDeg) * Math.PI / 180;
+  const afterSpeed = _initial_speed * _after_click_multiplier;
+  _velocity_after.vx = Math.cos(radAfter) * afterSpeed;
+  _velocity_after.vy = Math.sin(radAfter) * afterSpeed;
+}
 
 function applyPreset(preset) {
   if (!preset) return;
@@ -20,7 +38,10 @@ function applyPreset(preset) {
   if (typeof preset.initial_speed === 'number') _initial_speed = preset.initial_speed;
   if (typeof preset.after_click_multiplier === 'number') _after_click_multiplier = preset.after_click_multiplier;
   if (typeof preset.angle === 'number') _angle = preset.angle;
+  if (typeof preset.max_angle_delta === 'number') _max_angle_delta = preset.max_angle_delta;
   _currentPreset = preset;
+  // regenerate velocities from updated preset
+  computeVelocities();
 }
 
 module.exports = {
@@ -85,3 +106,5 @@ module.exports = {
     return state;
   }
 };
+
+module.exports.getVelocities = function() { return { initial: Object.assign({}, _velocity), afterClick: Object.assign({}, _velocity_after) }; };
